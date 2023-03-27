@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import CustomerSearch from "./CustomerSearch";
-import EmployeeSearch from "./EmployeeSearch";
 
 function App() {
   return (
