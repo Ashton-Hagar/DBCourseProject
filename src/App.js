@@ -1,6 +1,9 @@
 import React from "react";
 import "./App.css";
-import CustomerSearch from "./CustomerSearch";
+import CustomerSearch from "./CustomerSearch.js";
+import LoginPage from "./LoginPage.js";
+import EmployeeSearch from "./EmployeeSearch.js";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -9,7 +12,13 @@ function App() {
         <h1>Hotel Booking Application</h1>
       </header>
       <main>
-        <CustomerSearch />
+        <Router>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/CustomerSearch" element={<CustomerSearch />} />
+            <Route path="/EmployeeSearch" element={<EmployeeSearch />} />
+          </Routes>
+        </Router>
       </main>
     </div>
   );

@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
 
-const CustomerSearch = () => {
+const EmployeeSearch = () => {
   let navigate = useNavigate();
   const [searchParams, setSearchParams] = useState({
     startDate: "",
@@ -33,7 +33,7 @@ const CustomerSearch = () => {
         <Row>
           <Col>
             <form onSubmit={handleSubmit}>
-              <h2>Search Rooms</h2>
+              <h2>Assign Rooms</h2>
               <label>
                 Start Date:
                 <input
@@ -127,4 +127,4 @@ const CustomerSearch = () => {
   );
 };
 
-export default CustomerSearch;
+export default EmployeeSearch;
