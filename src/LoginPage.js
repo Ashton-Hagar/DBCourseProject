@@ -18,13 +18,16 @@ const LoginPage = () => {
     const { name, value } = event.target;
     setLogin({ ...loginParams, [name]: value });
   };
+  const handleSubmit = (event) => {
+    alert(loginParams.firstName + "\n" + loginParams.SSN);
+  };
 
   return (
     <div>
       <Container>
         <Row>
           <Col>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label>
                 First Name:
                 <input
@@ -57,6 +60,7 @@ const LoginPage = () => {
               >
                 CustomerPage
               </Button>
+              <Button type="submit">Submit</Button>
             </form>
           </Col>
         </Row>
