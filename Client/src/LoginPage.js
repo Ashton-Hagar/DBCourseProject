@@ -6,20 +6,56 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
-  let navigate = useNavigate();
-  const [loginParams, setLogin] = useState({
+  const [customerCredentials, setCustomerCredentials] = useState({
     firstName: "",
     SSN: "",
   });
+  const [employeeCredentials, setEmployeeCredentials] = useState({
+    firstName: "",
+    SSN: "",
+  });
+  const [error, setError] = useState("");
+  let navigate = useNavigate();
 
-  const handleChange = (event) => {
+  const handleChangeCus = (event) => {
     const { name, value } = event.target;
-    setLogin({ ...loginParams, [name]: value });
+    setCustomerCredentials({ ...customerCredentials, [name]: value });
   };
-  const handleSubmit = (event) => {
-    alert(loginParams.firstName + "\n" + loginParams.SSN);
+  const handleChangeEmp = (event) => {
+    const { name, value } = event.target;
+    setEmployeeCredentials({ ...employeeCredentials, [name]: value });
+  };
+  const handleSubmitEmp = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/employee",
+        employeeCredentials
+      );
+      console.log(response.data.message);
+      alert("success Employee");
+    } catch (err) {
+      alert("First name or SSN is incorrect");
+      setError(err.response.data.error);
+    }
+  };
+
+  const handleSubmitCus = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/customer",
+        customerCredentials
+      );
+      console.log(response.data.message);
+      alert("success Customer");
+    } catch (err) {
+      alert("First name or SSN is incorrect");
+      setError(err.response.data.error);
+    }
   };
 
   return (
@@ -27,79 +63,51 @@ const LoginPage = () => {
       <Container>
         <Row>
           <Col>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitCus}>
               <h1>Customer Login </h1>
               <label>
                 First Name:
                 <input
-                  type="name"
+                  type="text"
                   name="firstName"
-                  value={loginParams.firstName}
-                  onChange={handleChange}
+                  value={customerCredentials.firstName}
+                  onChange={handleChangeCus}
                 />
               </label>
               <label>
                 SSN:
                 <input
-                  type="SSN"
+                  type="text"
                   name="SSN"
-                  value={loginParams.SSN}
-                  onChange={handleChange}
+                  value={customerCredentials.SSN}
+                  onChange={handleChangeCus}
                 />
               </label>
-              <Button
-                onClick={() => {
-                  navigate("/EmployeeSearch");
-                }}
-              >
-                EmployeePage
-              </Button>
-              <Button
-                onClick={() => {
-                  navigate("/CustomerSearch");
-                }}
-              >
-                CustomerPage
-              </Button>
               <Button type="submit">Submit</Button>
             </form>
           </Col>
 
           <Col>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitEmp}>
               <h1>Employee Login</h1>
               <label>
                 First Name:
                 <input
-                  type="name"
+                  type="text"
                   name="firstName"
-                  value={loginParams.firstName}
-                  onChange={handleChange}
+                  value={employeeCredentials.firstName}
+                  onChange={handleChangeEmp}
                 />
               </label>
               <label>
                 SSN:
                 <input
-                  type="SSN"
+                  type="text"
                   name="SSN"
-                  value={loginParams.SSN}
-                  onChange={handleChange}
+                  value={employeeCredentials.SSN}
+                  onChange={handleChangeEmp}
                 />
               </label>
-              <Button
-                onClick={() => {
-                  navigate("/EmployeeSearch");
-                }}
-              >
-                EmployeePage
-              </Button>
-              <Button
-                onClick={() => {
-                  navigate("/CustomerSearch");
-                }}
-              >
-                CustomerPage
-              </Button>
               <Button type="submit">Submit</Button>
             </form>
           </Col>
