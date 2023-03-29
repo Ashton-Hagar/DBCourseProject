@@ -1,18 +1,21 @@
---creates
+-- creates db in tool
+create database hotels;
+
+-- creates tables
 create table hotelChain (
     hotelAmount int,
     officeAddress varchar(100),
-    phone varchar(10),
+    phone varchar(12),
     email varchar(50),
     chainName varchar(30) NOT NULL,
-    PRIMARY KEY(chainName)
+    PRIMARY KEY(officeAddress)
 );
 
 create table hotel (
     roomCount int,
     rating int,
     email varchar(50),
-    phone varchar(10),
+    phone varchar(12),
     chainName varchar(30),
     addy varchar(100) NOT NULL, -- note: had to change address to addy because it was a datatype
     PRIMARY KEY(addy)
@@ -25,10 +28,9 @@ create table hotelRoom(
     extension int,
     problems varchar(100),
     addy varchar(100),
-    booked int,
-    customerID int,
     roomNumber int NOT NULL,
-    PRIMARY KEY(roomNumber)
+    roomID int NOT NULL,
+    PRIMARY KEY(roomID)
 );
 
 create table amenities(
@@ -37,10 +39,8 @@ create table amenities(
         AC int,
         microwave int,
         coffeeMaker int,
-        addy varchar(100) NOT NULL,
-        roomNumber int NOT NULL,
-        PRIMARY KEY(addy),
-        FOREIGN KEY(roomNumber)
+        roomID int NOT NULL,
+        PRIMARY KEY(roomID)
 );
 
 create table customer(
@@ -71,6 +71,24 @@ create table employee(
     managerID int,
     SSN int NOT NULL,
     PRIMARY KEY(SSN)
+);
+
+create table bookings(
+    roomID int,
+    customerID int,
+    startDate date,
+    endDate date,
+    bookingID int,
+    PRIMARY KEY(bookingID)
+);
+
+create table rentings(
+    roomID int,
+    customerID int,
+    startDate date,
+    endDate date,
+    rentingID int,
+    PRIMARY KEY(rentingID)
 );
 
 -- full inserts
@@ -105,7 +123,7 @@ VALUES (3, 3, "joes@gmail.com", "613-942-4581", "Joe's Hotel", "200 Victory Road
        (3, 3, "joes@gmail.com", "613-942-4581", "Joe's Hotel", "4412 Goated Drive"),
        (2, 5, "chezavion@gmail.com", "613-706-7239", "Chez Avion", "92 Foreign Crescent"),
        (2, 5, "chezavion@gmail.com", "613-706-7239", "Chez Avion", "309 Bravante Lane"),
-       (2, 5, "chezavion@gmail.com", "613-706-7239", "Chez Avion", "53 Aristotle Street")
+       (2, 5, "chezavion@gmail.com", "613-706-7239", "Chez Avion", "53 Aristotle Street"),
        (1, 2, "shackupofficial@gmail.com", "613-183-4118", "Shack-up", "10 Crummy Road"),
        (1, 1, "shackupofficial@gmail.com", "613-183-4118", "Shack-up", "42 Grandy Lane"),
        (1, 3, "shackupofficial@gmail.com", "613-183-4118", "Shack-up", "95 Priscella Road"),
@@ -119,7 +137,7 @@ VALUES (3, 3, "joes@gmail.com", "613-942-4581", "Joe's Hotel", "200 Victory Road
        (3, 5, "wgretzky@gmail.com", "613-411-1002", "Wayne Gretzky Lodge", "99 Gretzky Road"),
        (2, 4, "poland@hotmail.com", "613-658-0029", "Polish Lodging", "2000 Luksus Lane"),
        (2, 5, "poland@hotmail.com", "613-658-0029", "Polish Lodging", "3000 Luksus Lane"),
-       (3, 4, "smileys@gmail.com", "613-102-4999",  "Smiley's Place", "2222 Brightside Avenue")
+       (3, 4, "smileys@gmail.com", "613-102-4999",  "Smiley's Place", "2222 Brightside Avenue"),
        (1, 5, "esquirehotels@esquire.com", "613-707-1114", "Esquire Inn", "25 Parkway Drive"),
        (1, 3, "ydavid@gmail.com", "613-111-1111", "David's Place", "1 David Road"),
        (1, 3, "hashton@gmail.com", "613-222-2222", "Ashton's Crib", "2 Ashton Road"),
@@ -131,114 +149,111 @@ VALUES (3, 3, "joes@gmail.com", "613-942-4581", "Joe's Hotel", "200 Victory Road
     extension int, -- (1 = no, 2 = yes)
     problems varchar(100),
     addy varchar(100),
-    booked int, -- (1 = no, 2 = yes)
-    customerID int,
     roomNumber int NOT NULL,
     PRIMARY KEY(roomNumber)*/
-INSERT INTO hotelRoom (price, capacity, viewType, extension, problems, addy, booked, customerID, roomNumber)
-VALUES (120.00, 1, 1, 1, "None.", "200 Victory Road", 2, 1, 101), -- joes hotel
-       (120.00, 1, 1, 1, "None.", "200 Victory Road", 2, 2, 102),
-       (125.00, 2, 1, 1, "None.", "200 Victory Road", 1, 0, 103),
-       (120.00, 1, 3, 1, "None.", "423 Princess Lane", 2, 3, 101),
-       (120.00, 1, 3, 1, "None.", "423 Princess Lane", 1, 0, 102),
-       (125.00, 2, 3, 1, "None.", "423 Princess Lane", 2, 4, 103),
-       (120.00, 1, 1, 1, "None.", "78 Northern Avenue", 2, 5, 101),
-       (120.00, 1, 1, 1, "None.", "78 Northern Avenue", 1, 0, 102),
-       (125.00, 2, 1, 1, "None.", "78 Northern Avenue", 1, 0, 103),
-       (120.00, 1, 2, 1, "AC is too loud.", "782 Pearlsboro Road", 2, 6, 101),
-       (120.00, 1, 2, 1, "None.", "782 Pearlsboro Road", 2, 7, 102),
-       (125.00, 2, 2, 1, "None.", "782 Pearlsboro Road", 2, 8, 103),
-       (140.00, 2, 2, 2, "None.", "782 Pearlsboro Road", 2, 9, 201),
-       (140.00, 2, 2, 2, "None.", "782 Pearlsboro Road", 2, 10, 202),
-       (120.00, 1, 1, 1, "None.", "4412 Goated Drive", 2, 11, 101),
-       (120.00, 1, 1, 1, "None.", "4412 Goated Drive", 1, 0, 102),
-       (125.00, 2, 1, 1, "None.", "4412 Goated Drive", 1, 0, 103),
-       (230.00, 1, 2, 2, "None.", "92 Foreign Crescent", 2, 12, 1000), -- chez avion
-       (230.00, 2, 2, 2, "None.", "92 Foreign Crescent", 2, 13, 2000),
-       (241.39, 1, 3, 2, "None.", "309 Bravante Lane", 2, 14, 1000),
-       (240.99, 2, 3, 2, "None.", "309 Bravante Lane", 2, 15, 2000),
-       (200.10, 2, 1, 1, "None.", "53 Aristotle Street", 2, 16, 1000),
-       (200.10, 2, 1, 1, "None.", "53 Aristotle Street", 1, 0, 2000),
-       (100.00, 1, 4, 1, "None.", "10 Crummy Road", 2, 17, 1), -- shackup
-       (89.99, 1, 4, 1, "Broken window.", "42 Grandy Lane", 2, 18, 1),
-       (100.00, 1, 3, 1, "None.", "95 Priscella Road", 1, 0, 1),
-       (110.99, 1, 3, 1, "Room is on a slant.", "2 Marigold Crescent", 1, 0, 1),
-       (100.00, 1, 4, 1, "None.", "102 Benedict Street", 2, 19, 1),
-       (99.99, 1, 1, 1, "Traffic is noisy.", "8125 Main Street", 2, 20, 1),
-       (100.50, 1, 4, 1, "Smells like weed.", "25 Reginald Street", 1, 0, 1),
-       (100.20, 1, 1, 1, "None.", "293 Walters Road", 2, 21, 1),
-       (100.69, 1, 1, 1, "None.", "67 Angus Avenue", 1, 0, 1),
-       (120.00, 1, 1, 1, "None.", "108 Central Street", 2, 22, 1),
-       (199.99, 2, 3, 2, "None.", "99 Gretzky Road", 2, 23, 101), -- wayne gretzky lodge
-       (199.99, 2, 3, 2, "Party room next door is noisy.", "99 Gretzky Road", 2, 24, 102),
-       (199.99, 2, 3, 2, "None.", "99 Gretzky Road", 2, 25, 103),
-       (179.99, 2, 1, 1, "None.", "2000 Luksus Lane", 2, 26, 101), -- polish lodging
-       (189.99, 2, 1, 1, "None.", "2000 Luksus Lane", 2, 27, 102),
-       (209.99, 2, 4, 2, "None.", "3000 Luksus Lane", 2, 28, 1000),
-       (209.99, 2, 4, 2, "None.", "3000 Luksus Lane", 1, 0, 2000),
-       (159.99, 1, 1, 1, "None.", "2222 Brightside Avenue", 2, 29, 101), -- smiley's
-       (159.99, 1, 1, 1, "Bed is noisy.", "2222 Brightside Avenue", 1, 0, 102),
-       (179.99, 2, 1, 2, "None.", "2222 Brightside Avenue", 2, 30, 201),
-       (120.00, 1, 1, 1, "None.", "25 Parkway Drive", 1, 0, 101), -- esquire
-       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 0, 1),-- david
-       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 0, 1), -- ashton
-       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 0, 1); -- ray
+INSERT INTO hotelRoom (price, capacity, viewType, extension, problems, addy, roomNumber, roomID)
+VALUES (120.00, 1, 1, 1, "None.", "200 Victory Road", 101, 1), -- joes hotel
+       (120.00, 1, 1, 1, "None.", "200 Victory Road", 102, 2),
+       (125.00, 2, 1, 1, "None.", "200 Victory Road", 103, 3),
+       (120.00, 1, 3, 1, "None.", "423 Princess Lane", 101, 4),
+       (120.00, 1, 3, 1, "None.", "423 Princess Lane", 102, 5),
+       (125.00, 2, 3, 1, "None.", "423 Princess Lane", 103, 6),
+       (120.00, 1, 1, 1, "None.", "78 Northern Avenue", 101, 7),
+       (120.00, 1, 1, 1, "None.", "78 Northern Avenue", 102, 8),
+       (125.00, 2, 1, 1, "None.", "78 Northern Avenue", 103, 9),
+       (120.00, 1, 2, 1, "AC is too loud.", "782 Pearlsboro Road", 101, 10),
+       (120.00, 1, 2, 1, "None.", "782 Pearlsboro Road", 102, 11),
+       (125.00, 2, 2, 1, "None.", "782 Pearlsboro Road", 103, 12),
+       (140.00, 2, 2, 2, "None.", "782 Pearlsboro Road", 201, 13),
+       (140.00, 2, 2, 2, "None.", "782 Pearlsboro Road", 202, 14),
+       (120.00, 1, 1, 1, "None.", "4412 Goated Drive", 101, 15),
+       (120.00, 1, 1, 1, "None.", "4412 Goated Drive", 102, 16),
+       (125.00, 2, 1, 1, "None.", "4412 Goated Drive", 103, 17),
+       (230.00, 1, 2, 2, "None.", "92 Foreign Crescent", 1000, 18), -- chez avion
+       (230.00, 2, 2, 2, "None.", "92 Foreign Crescent", 2000, 19),
+       (241.39, 1, 3, 2, "None.", "309 Bravante Lane", 1000, 20),
+       (240.99, 2, 3, 2, "None.", "309 Bravante Lane", 2000, 21),
+       (200.10, 2, 1, 1, "None.", "53 Aristotle Street", 1000, 22),
+       (200.10, 2, 1, 1, "None.", "53 Aristotle Street", 2000, 23),
+       (100.00, 1, 4, 1, "None.", "10 Crummy Road", 1, 24), -- shackup
+       (89.99, 1, 4, 1, "Broken window.", "42 Grandy Lane", 1, 25),
+       (100.00, 1, 3, 1, "None.", "95 Priscella Road", 1, 26),
+       (110.99, 1, 3, 1, "Room is on a slant.", "2 Marigold Crescent", 1, 27),
+       (100.00, 1, 4, 1, "None.", "102 Benedict Street", 1, 28),
+       (99.99, 1, 1, 1, "Traffic is noisy.", "8125 Main Street", 1, 29),
+       (100.50, 1, 4, 1, "Smells like weed.", "25 Reginald Street", 1, 30),
+       (100.20, 1, 1, 1, "None.", "293 Walters Road", 1, 31),
+       (100.69, 1, 1, 1, "None.", "67 Angus Avenue", 1, 32),
+       (120.00, 1, 1, 1, "None.", "108 Central Street", 1, 33),
+       (199.99, 2, 3, 2, "None.", "99 Gretzky Road", 101, 34), -- wayne gretzky lodge
+       (199.99, 2, 3, 2, "Party room next door is noisy.", "99 Gretzky Road", 102, 35),
+       (199.99, 2, 3, 2, "None.", "99 Gretzky Road", 103, 36),
+       (179.99, 2, 1, 1, "None.", "2000 Luksus Lane", 101, 37), -- polish lodging
+       (189.99, 2, 1, 1, "None.", "2000 Luksus Lane", 102, 38),
+       (209.99, 2, 4, 2, "None.", "3000 Luksus Lane", 1000, 39),
+       (209.99, 2, 4, 2, "None.", "3000 Luksus Lane", 2000, 40),
+       (159.99, 1, 1, 1, "None.", "2222 Brightside Avenue", 101, 41), -- smiley's
+       (159.99, 1, 1, 1, "Bed is noisy.", "2222 Brightside Avenue", 102, 42),
+       (179.99, 2, 1, 2, "None.", "2222 Brightside Avenue", 201, 43),
+       (120.00, 1, 1, 1, "None.", "25 Parkway Drive", 101, 44), -- esquire
+       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 45),-- david
+       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 46), -- ashton
+       (120.00, 1, 1, 1, "None.", "200 Victory Road", 1, 47); -- ray
 
-/*         fridge int, -- all these ints are replacements for bool, where 0 = true, 1 = false
+/*      fridge int, -- all these ints are replacements for bool, where 0 = true, 1 = false
         TV int,
         AC int,
         microwave int,
         coffeeMaker int,
-        addy varchar(100) NOT NULL,
-        roomNumber int NOT NULL, */
-INSERT INTO amenities(fridge, TV, AC, microwave, coffeeMaker, addy, roomNumber)
-VALUES (0, 0, 0, 0, 0, "200 Victory Road", 101), -- joes hotel
-       (0, 0, 0, 0, 0, "200 Victory Road", 102),
-       (0, 0, 0, 0, 0, "200 Victory Road", 103),
-       (0, 0, 0, 1, 0, "423 Princess Lane", 101),
-       (0, 0, 0, 1, 0, "423 Princess Lane", 102),
-       (0, 0, 0, 1, 0, "423 Princess Lane", 103),
-       (0, 0, 0, 0, 0, "78 Northern Avenue", 101),
-       (0, 0, 0, 0, 0, "78 Northern Avenue", 102),
-       (0, 0, 0, 0, 0, "78 Northern Avenue", 103),
-       (0, 0, 0, 0, 0, "782 Pearlsboro Road", 101),
-       (0, 0, 0, 0, 0, "782 Pearlsboro Road", 102),
-       (0, 0, 0, 0, 0, "782 Pearlsboro Road", 103),
-       (0, 0, 0, 0, 0, "782 Pearlsboro Road", 201),
-       (0, 0, 0, 0, 0, "782 Pearlsboro Road", 202),
-       (0, 0, 0, 0, 0, "4412 Goated Drive", 101),
-       (0, 0, 0, 0, 0, "4412 Goated Drive", 102),
-       (0, 0, 0, 0, 0, "4412 Goated Drive", 103),
-       (0, 0, 0, 0, 0, "92 Foreign Crescent", 1000), -- chez avion
-       (0, 0, 0, 0, 0, "92 Foreign Crescent", 2000),
-       (0, 0, 0, 0, 0, "309 Bravante Lane", 1000),
-       (0, 0, 0, 0, 0, "309 Bravante Lane", 2000),
-       (0, 0, 0, 0, 0, "53 Aristotle Street", 1000),
-       (0, 0, 0, 0, 0, "53 Aristotle Street", 2000),
-       (1, 0, 1, 0, 1, "10 Crummy Road", 1), -- shackup
-       (0, 1, 1, 0, 1, "42 Grandy Lane", 1),
-       (1, 1, 0, 1, 1, "95 Priscella Road", 1),
-       (1, 1, 1, 1, 0, "2 Marigold Crescent", 1),
-       (0, 0, 0, 1, 1, "102 Benedict Street", 1),
-       (0, 1, 1, 0, 0, "8125 Main Street", 1),
-       (0, 0, 0, 0, 1, "25 Reginald Street", 1),
-       (1, 0, 0, 0, 1, "293 Walters Road", 1),
-       (1, 1, 0, 0, 0, "67 Angus Avenue", 1),
-       (0, 0, 0, 1, 0, "108 Central Street", 1),
-       (0, 0, 0, 0, 0, "99 Gretzky Road", 101), -- wayne gretzky lodge
-       (0, 0, 0, 0, 0, "99 Gretzky Road", 102),
-       (0, 0, 0, 0, 0, "99 Gretzky Road", 103),
-       (0, 0, 0, 0, 0, "2000 Luksus Lane", 101), -- polish lodging
-       (0, 0, 0, 0, 0, "2000 Luksus Lane", 102),
-       (0, 0, 0, 0, 0, "3000 Luksus Lane", 1000),
-       (0, 0, 0, 0, 0, "3000 Luksus Lane", 2000),
-       (0, 0, 0, 1, 0, "2222 Brightside Avenue", 101), -- smiley's
-       (0, 0, 0, 1, 0, "2222 Brightside Avenue", 102),
-       (0, 0, 0, 1, 0, "2222 Brightside Avenue", 201),
-       (0, 0, 0, 0, 0, "25 Parkway Drive", 101), -- esquire
-       (0, 0, 0, 1, 1, "200 Victory Road", 1),-- david
-       (0, 0, 0, 1, 1, "200 Victory Road", 1), -- ashton
-       (0, 0, 0, 1, 1, "200 Victory Road", 1); -- ray
+        roomID int */
+INSERT INTO amenities(fridge, TV, AC, microwave, coffeeMaker, roomID)
+VALUES (0, 0, 0, 0, 0, 1), -- joes hotel
+       (0, 0, 0, 0, 0, 2),
+       (0, 0, 0, 0, 0, 3),
+       (0, 0, 0, 1, 0, 4),
+       (0, 0, 0, 1, 0, 5),
+       (0, 0, 0, 1, 0, 6),
+       (0, 0, 0, 0, 0, 7),
+       (0, 0, 0, 0, 0, 8),
+       (0, 0, 0, 0, 0, 9),
+       (0, 0, 0, 0, 0, 10),
+       (0, 0, 0, 0, 0, 11),
+       (0, 0, 0, 0, 0, 12),
+       (0, 0, 0, 0, 0, 13),
+       (0, 0, 0, 0, 0, 14),
+       (0, 0, 0, 0, 0, 15),
+       (0, 0, 0, 0, 0, 16),
+       (0, 0, 0, 0, 0, 17),
+       (0, 0, 0, 0, 0, 18), -- chez avion
+       (0, 0, 0, 0, 0, 19),
+       (0, 0, 0, 0, 0, 20),
+       (0, 0, 0, 0, 0, 21),
+       (0, 0, 0, 0, 0, 22),
+       (0, 0, 0, 0, 0, 23),
+       (1, 0, 1, 0, 1, 24), -- shackup
+       (0, 1, 1, 0, 1, 25),
+       (1, 1, 0, 1, 1, 26),
+       (1, 1, 1, 1, 0, 27),
+       (0, 0, 0, 1, 1, 28),
+       (0, 1, 1, 0, 0, 29),
+       (0, 0, 0, 0, 1, 30),
+       (1, 0, 0, 0, 1, 31),
+       (1, 1, 0, 0, 0, 32),
+       (0, 0, 0, 1, 0, 33),
+       (0, 0, 0, 0, 0, 34), -- wayne gretzky lodge
+       (0, 0, 0, 0, 0, 35),
+       (0, 0, 0, 0, 0, 36),
+       (0, 0, 0, 0, 0, 37), -- polish lodging
+       (0, 0, 0, 0, 0, 38),
+       (0, 0, 0, 0, 0, 39),
+       (0, 0, 0, 0, 0, 40),
+       (0, 0, 0, 1, 0, 41), -- smiley's
+       (0, 0, 0, 1, 0, 42),
+       (0, 0, 0, 1, 0, 43),
+       (0, 0, 0, 0, 0, 44), -- esquire
+       (0, 0, 0, 1, 1, 45),-- david
+       (0, 0, 0, 1, 1, 46), -- ashton
+       (0, 0, 0, 1, 1, 47); -- ray
 
 /*     addy varchar(100),
     firstName varchar(20),
@@ -247,41 +262,41 @@ VALUES (0, 0, 0, 0, 0, "200 Victory Road", 101), -- joes hotel
     SSN int,
     customerID int NOT NULL, */
 INSERT INTO customer (addy, firstName, lastName, dateRegistered, SSN, customerID)
-VALUES ("1 Plainview Gardens", "Harold", "Schrader", 2020-02-30, 1234, 1),
-       ("2 Plainview Gardens", "Daphne", "Neal", 2019-03-05, 2345, 2),
-       ("3 Plainview Gardens", "Lacie", "Skaggs", 2021-04-25, 3456, 3),
-       ("4 Plainview Gardens", "Carrington", "Baer", 2022-05-14, 4567, 4),
-       ("5 Plainview Gardens", "Alani", "Landon", 2020-06-12, 5678, 5),
-       ("6 Plainview Gardens", "Ashlin", "Holden", 2021-07-18, 6789, 6),
-       ("7 Plainview Gardens", "Shivani", "Gibson", 2022-08-21, 7890, 7),
-       ("8 Plainview Gardens", "Colby", "Valdes", 2022-09-26, 8901, 8),
-       ("9 Plainview Gardens", "Donte", "Lane", 2020-10-02, 9012, 9),
-       ("10 Plainview Gardens", "Ronaldo", "Connelly", 2020-11-01, 1357, 10),
-       ("1 Millborough Creek", "Aidan", "House", 2021-12-07, 3579, 11),
-       ("2 Millborough Creek", "Delanie", "Bueno", 2019-01-11, 5791, 12),
-       ("3 Millborough Creek", "Dejah", "Marvin", 2020-02-12, 7913, 13),
-       ("4 Millborough Creek", "Chelsey", "Behrens", 2020-03-19, 9135, 14),
-       ("5 Millborough Creek", "Makala", "Klinger", 2022-04-21, 2468, 15),
-       ("6 Millborough Creek", "Jaliyah", "Foreman", 2021-05-22, 4680, 16),
-       ("7 Millborough Creek", "Kelsie", "Sheppard", 2020-06-22, 6802, 17),
-       ("8 Millborough Creek", "Tyra", "Spain", 2020-07-23, 8024, 18),
-       ("9 Millborough Creek", "Yasmine", "Humphreys", 2021-08-24, 0246, 19),
-       ("10 Millborough Creek", "Haleigh", "Rockwell", 2021-09-27, 0123, 20),
-       ("1 Foxview Estates", "Darion", "Escobedo", 2022-10-29, 0987, 21),
-       ("2 Foxview Estates", "Brandon", "Parent", 2019-11-30, 9876, 22),
-       ("3 Foxview Estates", "Libby", "Lester", 2018-12-31, 8765, 23),
-       ("4 Foxview Estates", "Talon", "Pringle", 2020-01-04, 7654, 24),
-       ("5 Foxview Estates", "Javier", "McBride", 2020-02-07, 6543, 25),
-       ("6 Foxview Estates", "Bill", "Dunbar", 2018-03-21, 5432, 26),
-       ("7 Foxview Estates", "Berenice", "Ruff", 2020-04-26, 4321, 27),
-       ("8 Foxview Estates", "Eli", "Walters", 2019-05-27, 3210, 28),
-       ("9 Foxview Estates", "Jasmine", "Ashcraft", 2021-06-10, 2109, 29),
-       ("10 Foxview Estates", "Megan", "Counts", 2022-07-20, 1098, 30);
+VALUES ("1 Plainview Gardens", "Harold", "Schrader", "2020-02-20", 1234, 1),
+       ("2 Plainview Gardens", "Daphne", "Neal", "2019-03-05", 2345, 2),
+       ("3 Plainview Gardens", "Lacie", "Skaggs", "2021-04-25", 3456, 3),
+       ("4 Plainview Gardens", "Carrington", "Baer", "2022-05-14", 4567, 4),
+       ("5 Plainview Gardens", "Alani", "Landon", "2020-06-12", 5678, 5),
+       ("6 Plainview Gardens", "Ashlin", "Holden", "2021-07-18", 6789, 6),
+       ("7 Plainview Gardens", "Shivani", "Gibson", "2022-08-21", 7890, 7),
+       ("8 Plainview Gardens", "Colby", "Valdes", "2022-09-26", 8901, 8),
+       ("9 Plainview Gardens", "Donte", "Lane", "2020-10-02", 9012, 9),
+       ("10 Plainview Gardens", "Ronaldo", "Connelly", "2020-11-01", 1357, 10),
+       ("1 Millborough Creek", "Aidan", "House", "2021-12-07", 3579, 11),
+       ("2 Millborough Creek", "Delanie", "Bueno", "2019-01-11", 5791, 12),
+       ("3 Millborough Creek", "Dejah", "Marvin", "2020-02-12", 7913, 13),
+       ("4 Millborough Creek", "Chelsey", "Behrens", "2020-03-19", 9135, 14),
+       ("5 Millborough Creek", "Makala", "Klinger", "2022-04-21", 2468, 15),
+       ("6 Millborough Creek", "Jaliyah", "Foreman", "2021-05-22", 4680, 16),
+       ("7 Millborough Creek", "Kelsie", "Sheppard", "2020-06-22", 6802, 17),
+       ("8 Millborough Creek", "Tyra", "Spain", "2020-07-23", 8024, 18),
+       ("9 Millborough Creek", "Yasmine", "Humphreys", "2021-08-24", 0246, 19),
+       ("10 Millborough Creek", "Haleigh", "Rockwell", "2021-09-27", 0123, 20),
+       ("1 Foxview Estates", "Darion", "Escobedo", "2022-10-29", 0987, 21),
+       ("2 Foxview Estates", "Brandon", "Parent", "2019-11-30", 9876, 22),
+       ("3 Foxview Estates", "Libby", "Lester", "2018-12-31", 8765, 23),
+       ("4 Foxview Estates", "Talon", "Pringle", "2020-01-04", 7654, 24),
+       ("5 Foxview Estates", "Javier", "McBride", "2020-02-07", 6543, 25),
+       ("6 Foxview Estates", "Bill", "Dunbar", "2018-03-21", 5432, 26),
+       ("7 Foxview Estates", "Berenice", "Ruff", "2020-04-26", 4321, 27),
+       ("8 Foxview Estates", "Eli", "Walters", "2019-05-27", 3210, 28),
+       ("9 Foxview Estates", "Jasmine", "Ashcraft", "2021-06-10", 2109, 29),
+       ("10 Foxview Estates", "Megan", "Counts", "2022-07-20", 1098, 30);
 
 /*     addy varchar(100),
     firstName varchar(20),
     lastName varchar(30),
-    managerAddress varchar(100),
+    managerAddress varchar(100),customer
     SSN int,
     managerID int NOT NULL, */
 INSERT INTO manager (addy, firstName, lastName, managerAddress, SSN, managerID)
@@ -371,3 +386,44 @@ VALUES (1, "Kyron", "Custer", "1 Employee Road", 1, 0001),
        (2, "Freddy", "Earley", "50 Employee Road", 25, 0050),
        (1, "Destinie", "Lockett", "51 Employee Road", 26, 0051),
        (2, "Liliana", "Craddock", "52 Employee Road", 26, 0052);
+
+/*     roomID int,
+    customerID int,
+    startDate date,
+    endDate date,
+    bookingID int, */
+INSERT INTO bookings(roomID, customerID, startDate, endDate, bookingID)
+VALUES (1, 20, 2023-04-01, 2023-04-04, 1),
+       (8, 3, 2023-04-01, 2023-04-03, 2);
+
+INSERT INTO rentings(roomID, customerID, startDate, endDate, rentingID)
+VALUES (1, 1, 2023-03-14, 2023-03-16, 1),
+       (2, 2, 2023-03-14, 2023-03-18, 2),
+       (4, 3, 2023-03-14, 2023-03-20, 3),
+       (6, 4, 2023-03-15, 2023-03-17, 4),
+       (7, 5, 2023-03-15, 2023-03-18, 5),
+       (10, 6, 2023-03-15, 2023-03-18, 6),
+       (11, 7, 2023-03-15, 2023-03-19, 7),
+       (12, 8, 2023-03-16, 2023-03-18, 8),
+       (13, 9, 2023-03-17, 2023-03-20, 9),
+       (14, 10, 2023-03-17, 2023-03-25, 10),
+       (15, 11, 2023-03-18, 2023-03-23, 11),
+       (18, 12, 2023-03-19, 2023-03-24, 12),
+       (19, 13, 2023-03-20, 2023-03-30, 13),
+       (20, 14, 2023-03-20, 2023-03-31, 14),
+       (21, 15, 2023-03-20, 2023-04-02, 15),
+       (22, 16, 2023-03-21, 2023-03-28, 25),
+       (24, 17, 2023-03-22, 2023-03-24, 26),
+       (25, 18, 2023-03-23, 2023-03-26, 27),
+       (28, 19, 2023-03-23, 2023-03-27, 28),
+       (29, 20, 2023-03-23, 2023-03-29, 29),
+       (31, 21, 2023-03-23, 2023-03-30, 30),
+       (33, 22, 2023-03-23, 2023-03-30, 31),
+       (34, 23, 2023-03-23, 2023-03-31, 32),
+       (35, 24, 2023-03-23, 2023-04-10, 33),
+       (36, 25, 2023-03-24, 2023-03-25, 34),
+       (37, 26, 2023-03-24, 2023-03-28, 35),
+       (38, 27, 2023-03-25, 2023-03-28, 100),
+       (39, 28, 2023-03-25, 2023-03-29, 200),
+       (41, 29, 2023-03-25, 2023-04-02, 300),
+       (43, 30, 2023-03-25, 2023-04-03, 10000);
