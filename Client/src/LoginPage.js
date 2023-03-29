@@ -36,7 +36,7 @@ const LoginPage = () => {
         employeeCredentials
       );
       console.log(response.data.message);
-      alert("success Employee");
+      navigate("/EmployeeSearch");
     } catch (err) {
       alert("First name or SSN is incorrect");
       setError(err.response.data.error);
@@ -50,8 +50,8 @@ const LoginPage = () => {
         "http://localhost:5000/api/customer",
         customerCredentials
       );
+      navigate("/CustomerSearch");
       console.log(response.data.message);
-      alert("success Customer");
     } catch (err) {
       alert("First name or SSN is incorrect");
       setError(err.response.data.error);

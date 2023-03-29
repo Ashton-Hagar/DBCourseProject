@@ -37,6 +37,7 @@ app.post("/api/employee", (req, res) => {
   });
 });
 
+//For Customer login auth
 app.post("/api/customer", (req, res) => {
   const { firstName, SSN } = req.body;
   const query = "SELECT * FROM customer WHERE firstName = ? AND SSN = ?";
