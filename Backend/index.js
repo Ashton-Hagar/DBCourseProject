@@ -56,8 +56,50 @@ app.post("/api/customer", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+app.get("/api/hotels", (req, res) => {
+  const { capacity, price, roomNumber, chainName, startD, endD } = req.query;
 
+  const conditions = [];
+  const values = [];
+
+  if (startD & endD) {
+    conditions.push(
+      "NOT roomID = (SELECT roomID FROM hotels.bookings WHERE (hotels.bookings.startDate < startD = ? < hotels.bookings.endDate) OR (hotels.bookings.endDate > endD = ? > hotels.bookings.startDate)) AND (SELECT roomID FROM hotels.rentings WHERE (hotels.rentings.startDate < startD = ? < hotels.rentings.endDate) OR (hotels.rentings.endDate > endD = ? > hotels.rentings.startDate))"
+    );
+  }
+
+  if (capacity) {
+    conditions.push("capacity = ?");
+    values.push(capacity);
+  }
+  if (price) {
+    conditions.push("price = ?");
+    values.push(price);
+  }
+  if (roomNumber) {
+    conditions.push("roomNumber = ?");
+    values.push(roomNumber);
+  }
+  if (chainName) {
+    conditions.push("chainName = ?");
+    values.push(chainName);
+  }
+
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
+  const query = `SELECT * FROM hotels.hotelRoom RIGHT JOIN hotels.hotel ON hotels.hotelRoom.addy=hotels.hotel.addy ${whereClause}`;
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error("Error executing query:", error);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

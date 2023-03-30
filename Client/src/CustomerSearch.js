@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CustomerSearch = () => {
   let navigate = useNavigate();
@@ -14,19 +15,47 @@ const CustomerSearch = () => {
     endDate: "",
     capacity: "",
     area: "",
-    hotelChain: "",
+    chainName: "",
     hotelCategory: "",
-    numberOfRooms: "",
-    maxPrice: "",
+    roomNumber: "",
+    price: "",
   });
+
+  const [hotelroomList, setHotelRoomList] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setSearchParams({ ...searchParams, [name]: value });
   };
 
-  const handleSubmit = (event) => {
-    alert(searchParams.startDate + "\n" + searchParams.endDate);
+  const getHotelrooms = async (e) => {
+    e.preventDefault();
+    const capacity = searchParams.capacity;
+    const price = searchParams.price;
+    const roomNumber = searchParams.roomNumber;
+    const chainName = searchParams.chainName;
+    const startD = searchParams.startDate;
+    const endD = searchParams.endDate;
+    alert(
+      roomNumber +
+        "\n" +
+        price +
+        "\n" +
+        capacity +
+        "\n" +
+        chainName +
+        "\n" +
+        startD +
+        "\n" +
+        endD
+    );
+    axios
+      .get("http://localhost:5000/api/hotels", {
+        params: { capacity, price, roomNumber, chainName, startD, endD },
+      })
+      .then((response) => {
+        setHotelRoomList(response.data);
+      });
   };
 
   return (
@@ -34,7 +63,7 @@ const CustomerSearch = () => {
       <Container>
         <Row>
           <Col>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={getHotelrooms}>
               <h2>Search Rooms</h2>
               <label>
                 Start Date:
@@ -76,12 +105,25 @@ const CustomerSearch = () => {
               </label>
               <label>
                 Hotel Chain:
-                <input
-                  type="text"
-                  name="hotelChain"
-                  value={searchParams.hotelChain}
+                <select
+                  name="chainName"
+                  value={searchParams.chainName}
                   onChange={handleChange}
-                />
+                >
+                  <option></option>
+                  <option value="David's Place">David's Place</option>
+                  <option value="Smiley's Place">Smiley's Place</option>
+                  <option value="Chez Avion">Chez Avion</option>
+                  <option value="Ashton's Crib">Ashton's Crib</option>
+                  <option value="Esquire Inn">Esquire Inn</option>
+                  <option value="Ray's">Ray's</option>
+                  <option value="Joe's Hotel">Joe's Hotel</option>
+                  <option value="Shack-up">Shack-up</option>
+                  <option value="Polish Lodging">Polish Lodging</option>
+                  <option value="Wayne Gretzky Lodge">
+                    Wayne Gretzky Lodge
+                  </option>
+                </select>
               </label>
               <label>
                 Hotel Category:
@@ -97,7 +139,7 @@ const CustomerSearch = () => {
                 <input
                   type="number"
                   name="numberOfRooms"
-                  value={searchParams.numberOfRooms}
+                  value={searchParams.roomNumber}
                   onChange={handleChange}
                 />
               </label>
@@ -105,8 +147,8 @@ const CustomerSearch = () => {
                 Max Price:
                 <input
                   type="number"
-                  name="maxPrice"
-                  value={searchParams.maxPrice}
+                  name="price"
+                  value={searchParams.price}
                   onChange={handleChange}
                 />
               </label>
@@ -114,16 +156,18 @@ const CustomerSearch = () => {
             </form>
             {/* Render search results here */}
           </Col>
-          <Col>
-            <Table striped bordered hover className="TableOfHotels">
-              <tr>
-                <th>c1</th>
-                <th>c2</th>
-                <th>c3</th>
-                <th>c4</th>
-                <th>c5</th>
-              </tr>
-            </Table>
+          <Col className="CustomerResults">
+            {hotelroomList.map((val, key) => {
+              return (
+                <div className="ResultsDisplay">
+                  <p>
+                    RoomID: {val.roomID} RoomNumber: {val.roomNumber} Capacity:{" "}
+                    {val.capacity} price:
+                    {val.price} Chain Name: {val.chainName}
+                  </p>
+                </div>
+              );
+            })}
           </Col>
         </Row>
       </Container>

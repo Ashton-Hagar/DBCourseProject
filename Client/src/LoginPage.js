@@ -111,6 +111,21 @@ const LoginPage = () => {
               <Button type="submit">Submit</Button>
             </form>
           </Col>
+          <Col>
+            <form>
+              <h1>Admin Login</h1>
+              <label>
+                Password:
+                <input
+                  type="text"
+                  name="firstName"
+                  value="placeholder"
+                  onChange="placeholder"
+                />
+              </label>
+              <Button type="submit">Submit</Button>
+            </form>
+          </Col>
         </Row>
       </Container>
     </div>
