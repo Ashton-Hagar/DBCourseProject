@@ -3,7 +3,6 @@ import "./App.css";
 import CustomerSearch from "./CustomerSearch.js";
 import LoginPage from "./LoginPage.js";
 import EmployeeSearch from "./EmployeeSearch.js";
-import AdminSearch from "./AdminSearch.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/CustomerSearch" element={<CustomerSearch />} />
             <Route path="/EmployeeSearch" element={<EmployeeSearch />} />
-            <Route path="/AdminSearch" element={<AdminSearch />} />
           </Routes>
         </Router>
       </main>

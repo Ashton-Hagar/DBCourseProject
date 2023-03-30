@@ -157,32 +157,18 @@ const CustomerSearch = () => {
             {/* Render search results here */}
           </Col>
           <Col className="CustomerResults">
-            <table>
-              <thead>
-              <tr>
-                <th>RoomID</th>
-                <th>RoomNumber</th>
-                <th>Capacity</th>
-                <th>Price</th>
-                <th>Chain Name</th>
-              </tr>
-              </thead>
-              <tbody>
-              {hotelroomList.map((val, key) => {
-                return (
-                    <tr key={key}>
-                      <td>{val.roomID}</td>
-                      <td>{val.roomNumber}</td>
-                      <td>{val.capacity}</td>
-                      <td>{val.price}</td>
-                      <td>{val.chainName}</td>
-                    </tr>
-                );
-              })}
-              </tbody>
-            </table>
+            {hotelroomList.map((val, key) => {
+              return (
+                <div className="ResultsDisplay">
+                  <p>
+                    RoomID: {val.roomID} RoomNumber: {val.roomNumber} Capacity:{" "}
+                    {val.capacity} price:
+                    {val.price} Chain Name: {val.chainName}
+                  </p>
+                </div>
+              );
+            })}
           </Col>
-
         </Row>
       </Container>
     </div>
