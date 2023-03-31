@@ -23,6 +23,59 @@ SELECT price, addy, roomNumber FROM hotelRoom
 WHERE capacity = x;
 
 
+-- trigger for the following updates to amenities
+CREATE TRIGGER invalidRoomID
+BEFORE UPDATE ON amenities
+FOR EACH ROW
+BEGIN
+    IF(rmID NOT IN(SELECT roomID FROM amenities)) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid inputted roomID.';
+    END IF;
+END;
+
+-- UPDATE statements
+-- these update amenities if a specific amenity was added in a roomID = rmID
+UPDATE amenities
+SET fridge = 1 WHERE roomID = rmID;
+
+UPDATE amenities
+SET TV = 1 WHERE roomID = rmID;
+
+UPDATE amenities
+SET AC = 1 WHERE roomID = rmID;
+
+UPDATE amenities
+SET microwave = 1 WHERE roomID = rmID;
+
+UPDATE amenities
+SET coffeeMaker = 1 WHERE roomID = rmID;
+
+-- these update amenities if a specific amenity was removed from a roomID = rmID
+UPDATE amenities
+SET fridge = 0 WHERE roomID = rmID;
+
+UPDATE amenities
+SET TV = 0 WHERE roomID = rmID;
+
+UPDATE amenities
+SET AC = 0 WHERE roomID = rmID;
+
+UPDATE amenities
+SET microwave = 0 WHERE roomID = rmID;
+
+UPDATE amenities
+SET coffeeMaker = 0 WHERE roomID = rmID;
+
+-- employee wanting to update their ssn to a new ssn = ssnNew, inputting their old one as ssnOld
+UPDATE employee
+SET ssn = ssnNew WHERE ssn = ssnOld;
+
+-- employee wanting to update their address (addyNew), inputting their ssn to verify its them (empSsn)
+UPDATE employee
+SET empAddress = addyNew WHERE ssn = empSsn;
+
+
+
 
 
 -- DELETE statements
