@@ -17,6 +17,10 @@ const LoginPage = () => {
     firstName: "",
     SSN: "",
   });
+  const [adminCredentials, setAdminCredentials] = useState({
+    password: "",
+    //SSN: "",
+  });
   const [error, setError] = useState("");
   let navigate = useNavigate();
 
@@ -27,6 +31,11 @@ const LoginPage = () => {
   const handleChangeEmp = (event) => {
     const { name, value } = event.target;
     setEmployeeCredentials({ ...employeeCredentials, [name]: value });
+  };
+
+  const handleChangeAdm = (event) => {
+    const { name, value } = event.target;
+    setAdminCredentials({ ...adminCredentials, [name]: value });
   };
   const handleSubmitEmp = async (e) => {
     e.preventDefault();
@@ -54,6 +63,22 @@ const LoginPage = () => {
       console.log(response.data.message);
     } catch (err) {
       alert("First name or SSN is incorrect");
+      setError(err.response.data.error);
+    }
+  };
+
+  //admin login submit action
+  const handleSubmitAdm = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+          "http://localhost:5000/api/admin",
+          adminCredentials
+      );
+      navigate("/AdminSearch");
+      console.log(response.data.message);
+    } catch (err) {
+      alert("incorrect password. Please try again.");
       setError(err.response.data.error);
     }
   };
@@ -119,7 +144,7 @@ const LoginPage = () => {
                 <input
                   type="text"
                   name="firstName"
-                  value="placeholder"
+                  value="admin"
                   onChange="placeholder"
                 />
               </label>
