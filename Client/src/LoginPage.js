@@ -72,7 +72,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-          "http://localhost:5000/api/admin",
+          "http://localhost:5000/api/admin-login",
           adminCredentials
       );
       navigate("/AdminSearch");

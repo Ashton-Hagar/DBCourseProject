@@ -56,7 +56,7 @@ app.post("/api/customer", (req, res) => {
   });
 });
 
-app.post("/api/admin", (req, res) => {
+app.post("/api/admin-login", (req, res) => {
   const { firstName } = req.body;
   const password = "password";
 
