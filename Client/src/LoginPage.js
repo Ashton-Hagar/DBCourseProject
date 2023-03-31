@@ -18,7 +18,7 @@ const LoginPage = () => {
     SSN: "",
   });
   const [adminCredentials, setAdminCredentials] = useState({
-    password: "",
+    firstName: ""
     //SSN: "",
   });
   const [error, setError] = useState("");
@@ -137,15 +137,15 @@ const LoginPage = () => {
             </form>
           </Col>
           <Col>
-            <form>
+            <form onSubmit={handleSubmitAdm}>
               <h1>Admin Login</h1>
               <label>
                 Password:
                 <input
                   type="text"
                   name="firstName"
-                  value="admin"
-                  onChange="placeholder"
+                  value={adminCredentials.firstName}
+                  onChange={handleChangeAdm}
                 />
               </label>
               <Button type="submit">Submit</Button>

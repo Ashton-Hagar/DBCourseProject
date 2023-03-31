@@ -56,6 +56,19 @@ app.post("/api/customer", (req, res) => {
   });
 });
 
+app.post("/api/admin", (req, res) => {
+  const { firstName } = req.body;
+  const password = "password";
+
+  //password functionality temporarily disabled. Log in with any password.
+
+  if (firstName === password) {
+    res.status(200).json({ message: "Login successful." });
+  } else {
+    res.status(401).json({ error: "Invalid username or password." });
+  }
+});
+
 app.get("/api/hotels", (req, res) => {
   const { capacity, price, roomNumber, chainName, startD, endD } = req.query;
 
@@ -98,6 +111,8 @@ app.get("/api/hotels", (req, res) => {
     }
   });
 });
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
