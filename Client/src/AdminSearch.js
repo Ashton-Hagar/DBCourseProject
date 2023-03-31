@@ -17,7 +17,7 @@ function AdminSearch() {
 
     // Load bookings data from server on component mount
     useEffect(() => {
-        axios.get('/bookings')
+        axios.get('localhost:5000/api/getbookings')
             .then(response => setBookings(response.data))
             .catch(error => console.log(error));
     }, []);
@@ -26,7 +26,7 @@ function AdminSearch() {
     const handleAddBookingSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('/api/bookings', {
+            const response = await fetch('localhost:5000/api/getbookings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ function AdminSearch() {
 
     // Handler for delete booking button click
     function handleDeleteBookingClick(bookingID) {
-        axios.delete(`/bookings/${bookingID}`)
+        axios.delete(`/getbookings/${bookingID}`)
             .then(() => {
                 setBookings(bookings.filter(booking => booking.bookingID !== bookingID));
             })

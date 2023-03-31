@@ -112,7 +112,17 @@ app.get("/api/hotels", (req, res) => {
   });
 });
 
-
+app.get("/api/getbookings", (req, res) => {
+  const query = 'SELECT * FROM bookings';
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error("Error executing query:", error);
+      res.status(500).json({error: "Internal server error"});
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
