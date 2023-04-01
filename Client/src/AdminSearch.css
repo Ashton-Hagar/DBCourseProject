@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bookings {
+    width: 50%;
+}
+
+.add-booking {
+    width: 40%;
+}

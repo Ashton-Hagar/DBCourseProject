@@ -126,9 +126,12 @@ app.get("/api/hotels", (req, res) => {
   });
 });
 
+//AdminSearch : get all bookings
 app.get("/api/getbookings", (req, res) => {
+  const{ roomID, customerID, startDate, endDate, bookingID } = req.query;
+  //const values = [ roomID, customerID, startDate, endDate, bookingID ];
   const query = "SELECT * FROM bookings";
-  connection.query(query, values, (error, results) => {
+  connection.query(query, (error, results) => {
     if (error) {
       console.error("Error executing query:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -136,6 +139,52 @@ app.get("/api/getbookings", (req, res) => {
       res.json(results);
     }
   });
+});
+
+app.get("/api/adminbookings", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM bookings");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+});
+
+// Add a new booking to the database
+app.post("/api/adminbookings", async (req, res) => {
+  const { roomID, customerID, startDate, endDate } = req.body;
+
+  try {
+    const [result] = await pool.query(
+        "INSERT INTO bookings (roomID, customerID, startDate, endDate) VALUES (?, ?, ?, ?)",
+        [roomID, customerID, startDate, endDate]
+    );
+    const [booking] = await pool.query(
+        "SELECT * FROM bookings WHERE bookingID = ?",
+        [result.insertId]
+    );
+    res.status(201).json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to add booking" });
+  }
+});
+
+// Delete a booking from the database
+app.delete("/api/adminbookings/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [result] = await pool.query("DELETE FROM bookings WHERE bookingID = ?", [id]);
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: `Booking with ID ${id} not found` });
+    } else {
+      res.status(204).send();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete booking" });
+  }
 });
 
 //Getting CustomerID
@@ -152,6 +201,7 @@ app.get("/api/customer", (req, res) => {
   });
 });
 
+// get MAX of existing bookingID
 app.get("/api/bookingss", (req, res) => {
   const query = "SELECT MAX(bookingID) as max_value FROM bookings";
   connection.query(query, (error, results) => {
