@@ -14,7 +14,7 @@ SELECT * FROM hotelRoom
 WHERE NOT roomID = ((SELECT roomID FROM bookings
                               WHERE (startDate < startD < endDate)
                                  OR (endDate > endD > startDate))
-                    AND (SELECT roomID FROM rentings
+                    AND NOT roomID = (SELECT roomID FROM rentings
                          WHERE (startDate < startD < endDate)
                             OR (endDate > endD > startDate)));
 
@@ -38,6 +38,9 @@ WHERE customerID = (SELECT customerID FROM customers
 SELECT * FROM rentings
 WHERE customerID = (SELECT customerID FROM customers
                     WHERE ssn = ssnInput);
+-- find all rooms where price is below or equal to input (inputPrice)
+SELECT * FROM hotelRoom
+WHERE inputPrice >= price;
 
 
 
@@ -137,3 +140,37 @@ SELECT * FROM booking
 SELECT * hotel, hotelRoom FROM hotelRoom
 FULL OUTER JOIN hotel ON hotelRoom.addy=hotel.addy;
 
+
+
+-- INDEXES
+-- index on customer for firstName, used in logging in
+CREATE INDEX index_customer_first ON customer (firstName);
+-- index on customer for customerID, will pull more recent customers
+CREATE INDEX index_customer_ID_recent ON customer (customerID) WHERE customerID > 30;
+-- creating a bitmapped index on customer using customerID
+CREATE BITMAP INDEX index_bitmap_customer ON customer (customerID);
+
+
+-- queries of the VIEWS
+-- view 1: number of available rooms per area (areaInput = inputted area)
+SELECT SUM(roomID) FROM hotelRoom
+    WHERE addy = (SELECT addy from hotel
+                    WHERE area = areaInput);
+
+-- gets amount of rooms in a certain area
+SELECT SUM(roomCount) FROM hotel
+WHERE area = areaInput;
+
+-- getting roomID for all bookings that are not for current day (available rooms)
+SELECT roomID FROM bookings
+WHERE NOT startDate < 2023-04-01 < endDate;
+
+-- getting number of rooms available for current day
+SELECT COUNT(roomID) FROM hotelRoom
+WHERE roomID = (SELECT roomID FROM bookings
+                WHERE NOT startDate < 2023-04-01 < endDate);
+
+-- view 2: total capacity of rooms in a given hotel (using address of hotel hotelAddress)
+SELECT SUM(capacity) FROM hotelRoom
+WHERE addy = (SELECT addy FROM hotel
+        WHERE addy = hotelAddress);
