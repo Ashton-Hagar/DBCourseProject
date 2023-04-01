@@ -12,16 +12,13 @@ WHERE firstName="Name" AND ssn=x;
 -- note: this is built assuming user cannot input endD earlier than startD
 SELECT * FROM hotelRoom
 WHERE NOT roomID = ((SELECT roomID FROM bookings
-                              WHERE (startDate < startD < endDate)
-                                 OR (endDate > endD > startDate))
-                    AND NOT roomID = (SELECT roomID FROM rentings
-                         WHERE (startDate < startD < endDate)
-                            OR (endDate > endD > startDate)));
+                              WHERE ((startDate < startD < endDate)
+                                 OR (endDate > endD > startDate)) OR
+                                  (startD < startDate AND endD > endDate));
 
 -- grabs all prices, addresses, and room numbers of hotel rooms with x capacity
 SELECT price, addy, roomNumber FROM hotelRoom
 WHERE capacity = x;
-
 -- grabs customerID based on their ssn input (ssnInput)
 SELECT customerID FROM customers
 WHERE ssn = ssnInput;
@@ -58,32 +55,23 @@ END;
 -- these update amenities if a specific amenity was added in a roomID = rmID
 UPDATE amenities
 SET fridge = 1 WHERE roomID = rmID;
-
 UPDATE amenities
 SET TV = 1 WHERE roomID = rmID;
-
 UPDATE amenities
 SET AC = 1 WHERE roomID = rmID;
-
 UPDATE amenities
 SET microwave = 1 WHERE roomID = rmID;
-
 UPDATE amenities
 SET coffeeMaker = 1 WHERE roomID = rmID;
-
 -- these update amenities if a specific amenity was removed from a roomID = rmID
 UPDATE amenities
 SET fridge = 0 WHERE roomID = rmID;
-
 UPDATE amenities
 SET TV = 0 WHERE roomID = rmID;
-
 UPDATE amenities
 SET AC = 0 WHERE roomID = rmID;
-
 UPDATE amenities
 SET microwave = 0 WHERE roomID = rmID;
-
 UPDATE amenities
 SET coffeeMaker = 0 WHERE roomID = rmID;
 
@@ -153,6 +141,7 @@ CREATE BITMAP INDEX index_bitmap_customer ON customer (customerID);
 
 -- queries of the VIEWS
 -- view 1: number of available rooms per area (areaInput = inputted area)
+CREATE VIEW [Available Rooms] AS
 SELECT SUM(roomID) FROM hotelRoom
     WHERE addy = (SELECT addy from hotel
                     WHERE area = areaInput);
@@ -171,6 +160,7 @@ WHERE roomID = (SELECT roomID FROM bookings
                 WHERE NOT startDate < 2023-04-01 < endDate);
 
 -- view 2: total capacity of rooms in a given hotel (using address of hotel hotelAddress)
+CREATE VIEW [Total Capacity] AS
 SELECT SUM(capacity) FROM hotelRoom
 WHERE addy = (SELECT addy FROM hotel
         WHERE addy = hotelAddress);
